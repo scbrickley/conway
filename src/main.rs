@@ -12,22 +12,22 @@ const BOTTOM: f32 = 580.0;
 const RIGHT: f32 = 780.0;
 
 struct Cell {
-    alive: bool
+    alive: bool,
 }
 
 struct MainState {
-    grid: Vec<Vec<Cell>>
+    grid: Vec<Vec<Cell>>,
 }
 
 impl MainState {
     fn new() -> GameResult<MainState> {
         let mut grid: Vec<Vec<Cell>> = vec![];
 
-        for _ in 0..=((RIGHT-LEFT)/CELL_SIZE) as i32 {
+        for _ in 0..=((RIGHT - LEFT) / CELL_SIZE) as i32 {
             let mut row = vec![];
 
-            for _ in 0..=((BOTTOM-TOP)/CELL_SIZE) as i32 {
-                row.push(Cell { alive: false } );
+            for _ in 0..=((BOTTOM - TOP) / CELL_SIZE) as i32 {
+                row.push(Cell { alive: false });
             }
 
             grid.push(row);
@@ -54,7 +54,8 @@ impl event::EventHandler for MainState {
             ctx,
             graphics::DrawMode::fill(),
             graphics::Rect::new(CELL_SIZE, CELL_SIZE, CELL_SIZE, CELL_SIZE),
-            graphics::WHITE)?;
+            graphics::WHITE,
+        )?;
 
         for row in 0..self.grid.len() {
             for column in 0..self.grid[row].len() {

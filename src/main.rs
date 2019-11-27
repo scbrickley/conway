@@ -35,11 +35,34 @@ impl Grid {
         Ok(state)
     }
 
-/*
-    fn count_neighbors(&self, x: usize, y: usize) -> u32 {
-        
-    }
-*/
+    // THE FUNCTION BELOW IS REALLY UGLY. FIND A WAY TO WRAP TO THE OTHER SIDE
+    // WHEN INDEXING NEAR THE EDGE OF THE GRID. MAKE SURE IT DOESN'T
+    // LOOK LIKE SHIT
+    /*
+        fn count_neighbors(&self, x: usize, y: usize) -> u32 {
+            let mut nieghbors = 0
+
+            match (x, y) {
+                (0, 0) =>,
+                (self.grid.len(), self.grid[0].len()) =>,
+                (self.grid.len(), 0) =>,
+                (0, self.grid[0].len()) =>,
+                (0, y) =>,
+                (self.grid.len(), y) =>,
+                (x, 0) =>,
+                (x, self.grid[0].len()) =>,
+                _ => {
+                    for row_mod in -1..=1 {
+                        for col_mod in -1..=1 {
+                            if self.cells[x + row_mod][y + col_mod].alive {
+                                neighbors += 1
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    */
 }
 
 impl event::EventHandler for Grid {
@@ -69,7 +92,7 @@ impl event::EventHandler for Grid {
                     let x: f32 = row as f32 * CELL_SIZE;
                     let y: f32 = column as f32 * CELL_SIZE;
                     // I have no idea why a trailing comma needs to be here.
-                    //                                                 | 
+                    //                                                 |
                     //                                                 v
                     graphics::draw(ctx, &square, (na::Point2::new(x, y),))?;
                     // But it was included in the example code that this project was

@@ -21,10 +21,10 @@ impl Grid {
     fn new() -> GameResult<Grid> {
         let mut cells: Vec<Vec<Cell>> = vec![];
 
-        for _ in 0..=(RIGHT / CELL_SIZE) as i32 {
+        for _ in 0..=(RIGHT / CELL_SIZE) as usize {
             let mut row = vec![];
 
-            for _ in 0..=(BOTTOM / CELL_SIZE) as i32 {
+            for _ in 0..=(BOTTOM / CELL_SIZE) as usize {
                 row.push(Cell { alive: false });
             }
 
@@ -44,15 +44,17 @@ impl Grid {
 
 impl event::EventHandler for Grid {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
-        self.cells[79][59].alive = true;
-        self.cells[0][59].alive = true;
-        self.cells[79][0].alive = true;
-        self.cells[0][0].alive = true;
+        self.cells[30][30].alive = true;
+        self.cells[31][30].alive = true;
+        self.cells[32][30].alive = true;
+        self.cells[32][29].alive = true;
+        self.cells[31][28].alive = true;
+
         Ok(())
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        graphics::clear(ctx, [0.1, 0.1, 0.1, 1.0].into());
+        graphics::clear(ctx, [0.9, 0.2, 0.2, 1.0].into());
 
         let square = graphics::Mesh::new_rectangle(
             ctx,

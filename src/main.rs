@@ -35,6 +35,36 @@ impl Grid {
         Ok(state)
     }
 
+    fn exploder() -> GameResult<Grid> {
+        let mut cells: Vec<Vec<Cell>> = vec![];
+
+        for _ in 0..=(RIGHT / CELL_SIZE) as usize {
+            let mut row = vec![];
+
+            for _ in 0..=(BOTTOM / CELL_SIZE) as usize {
+                row.push(Cell { alive: false });
+            }
+
+            cells.push(row);
+        }
+
+        cells[10][10].alive = true;
+        cells[10][11].alive = true;
+        cells[10][12].alive = true;
+        cells[10][13].alive = true;
+        cells[10][14].alive = true;
+        cells[14][10].alive = true;
+        cells[14][11].alive = true;
+        cells[14][12].alive = true;
+        cells[14][13].alive = true;
+        cells[14][14].alive = true;
+        cells[12][10].alive = true;
+        cells[12][14].alive = true;
+
+        let state = Grid { cells };
+        Ok(state)
+    }
+
     fn glider() -> GameResult<Grid> {
         let mut cells: Vec<Vec<Cell>> = vec![];
 
@@ -148,7 +178,7 @@ impl event::EventHandler for Grid {
 fn main() -> GameResult {
     let cb = ggez::ContextBuilder::new("super_simple", "ggez");
     let (ctx, event_loop) = &mut cb.build()?;
-    let grid = &mut Grid::glider()?;
+    let grid = &mut Grid::exploder()?;
     event::run(ctx, event_loop, grid)
 }
 

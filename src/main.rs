@@ -1,6 +1,7 @@
 extern crate ggez;
 
 use ggez::event;
+use ggez::event::{ MouseButton, KeyCode, KeyMods };
 use ggez::graphics;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
@@ -15,6 +16,7 @@ struct Cell {
 
 struct Grid {
     cells: Vec<Vec<Cell>>,
+    paused: bool
 }
 
 impl Grid {
@@ -31,7 +33,7 @@ impl Grid {
             cells.push(row);
         }
 
-        let state = Grid { cells };
+        let state = Grid { cells, paused: false };
         Ok(state)
     }
 
@@ -89,11 +91,10 @@ impl Grid {
         cells[45][17].alive = true;
         cells[46][15].alive = true;
         cells[47][16].alive = true;
-        
-        let state = Grid { cells };
+
+        let state = Grid { cells, paused: false };
         Ok(state)
     }
-
 
     fn exploder() -> GameResult<Grid> {
         let mut cells: Vec<Vec<Cell>> = vec![];
@@ -121,7 +122,7 @@ impl Grid {
         cells[12][10].alive = true;
         cells[12][14].alive = true;
 
-        let state = Grid { cells };
+        let state = Grid { cells, paused: false };
         Ok(state)
     }
 
@@ -144,7 +145,7 @@ impl Grid {
         cells[12][21].alive = true;
         cells[11][22].alive = true;
 
-        let state = Grid { cells };
+        let state = Grid { cells, paused: false };
         Ok(state)
     }
 
@@ -165,7 +166,7 @@ impl Grid {
         cells[10][19].alive = true;
         cells[10][18].alive = true;
 
-        let state = Grid { cells };
+        let state = Grid { cells, paused: false };
         Ok(state)
     }
 
@@ -174,7 +175,9 @@ impl Grid {
 
         for row_mod in -1i32..=1i32 {
             for col_mod in -1i32..=1i32 {
-                if row_mod == 0 && col_mod == 0 { continue }
+                if row_mod == 0 && col_mod == 0 {
+                    continue;
+                }
                 let (wrapped_x, wrapped_y) = wrap_coords(x + row_mod, y + col_mod);
                 if self.cells[wrapped_x][wrapped_y].alive {
                     neighbors += 1
@@ -184,20 +187,30 @@ impl Grid {
 
         neighbors
     }
+
+    fn toggle_pause(&mut self) {
+        if self.paused {
+            self.paused = false;
+        } else {
+            self.paused = true;
+        }
+    }
 }
 
 impl event::EventHandler for Grid {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
+        if self.paused { return Ok(()) };
+
         let mut new_grid = Grid::new()?;
 
         for row in 0..self.cells.len() {
             for col in 0..self.cells[row].len() {
                 match self.count_neighbors(row as i32, col as i32) {
-                    0|1 => new_grid.cells[row][col].alive = false,
-                    2 => new_grid.cells[row][col].alive =  self.cells[row][col].alive,
+                    0 | 1 => new_grid.cells[row][col].alive = false,
+                    2 => new_grid.cells[row][col].alive = self.cells[row][col].alive,
                     3 => new_grid.cells[row][col].alive = true,
                     4..=8 => new_grid.cells[row][col].alive = false,
-                    _ => println!("FUCK")
+                    _ => println!("FUCK"),
                 }
             }
         }
@@ -227,6 +240,27 @@ impl event::EventHandler for Grid {
 
         graphics::present(ctx)?;
         Ok(())
+    }
+
+    fn mouse_button_down_event(&mut self, _ctx: &mut Context, _button: MouseButton, x: f32, y: f32) {
+        let row = (x / CELL_SIZE) as usize;
+        let column = (y / CELL_SIZE) as usize;
+
+        self.cells[row][column].alive = true;
+    }
+
+    fn key_down_event(
+        &mut self,
+        ctx: &mut Context,
+        keycode: KeyCode,
+        _keymod: KeyMods,
+        _repeat: bool,
+    ) { 
+        match keycode {
+            KeyCode::Space => self.toggle_pause(),
+            KeyCode::Q | KeyCode::Escape => event::quit(ctx),
+            _ => println!("No mapping for the {:?} key", keycode)
+        }
     }
 }
 

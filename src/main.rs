@@ -4,7 +4,8 @@ use ggez::event;
 use ggez::event::{ MouseButton, KeyCode, KeyMods };
 use ggez::graphics;
 use ggez::nalgebra as na;
-use ggez::{Context, GameResult};
+use ggez::{ Context, GameResult };
+use ggez::conf::WindowSetup;
 
 const CELL_SIZE: f32 = 10.0;
 const BOTTOM: f32 = 590.0;
@@ -12,6 +13,15 @@ const RIGHT: f32 = 790.0;
 
 struct Cell {
     alive: bool,
+}
+
+impl Cell {
+    fn toggle_alive(&mut self) {
+        match self.alive {
+            true => self.alive = false,
+            false => self.alive = true
+        }
+    }
 }
 
 struct Grid {
@@ -33,7 +43,7 @@ impl Grid {
             cells.push(row);
         }
 
-        let state = Grid { cells, paused: false };
+        let state = Grid { cells, paused: true };
         Ok(state)
     }
 
@@ -189,10 +199,9 @@ impl Grid {
     }
 
     fn toggle_pause(&mut self) {
-        if self.paused {
-            self.paused = false;
-        } else {
-            self.paused = true;
+        match self.paused {
+            true => self.paused = false,
+            false => self.paused = true
         }
     }
 }
@@ -246,7 +255,7 @@ impl event::EventHandler for Grid {
         let row = (x / CELL_SIZE) as usize;
         let column = (y / CELL_SIZE) as usize;
 
-        self.cells[row][column].alive = true;
+        self.cells[row][column].toggle_alive();
     }
 
     fn key_down_event(
@@ -265,10 +274,27 @@ impl event::EventHandler for Grid {
 }
 
 fn main() -> GameResult {
-    let cb = ggez::ContextBuilder::new("super_simple", "ggez");
+    let mut grid: Grid;
+    let argv: Vec<String> = std::env::args().collect();
+
+    if argv.len() == 2 {
+        grid = match &argv[1][..] {
+            "exploder" => Grid::exploder().unwrap(),
+            "glider" => Grid::glider().unwrap(),
+            "gun" => Grid::glider_gun().unwrap(),
+            "bar" => Grid::bar().unwrap(),
+            _ => Grid::new().unwrap()
+        };
+    } else {
+        grid = Grid::new().unwrap();
+    }
+
+    let window_setup = WindowSetup::default().title("Conway's Game of Life").vsync(true);
+
+    let cb = ggez::ContextBuilder::new("super_simple", "ggez")
+        .window_setup(window_setup);
     let (ctx, event_loop) = &mut cb.build()?;
-    let grid = &mut Grid::glider_gun()?;
-    event::run(ctx, event_loop, grid)
+    event::run(ctx, event_loop, &mut grid)
 }
 
 fn wrap_coords(mut x: i32, mut y: i32) -> (usize, usize) {

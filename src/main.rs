@@ -219,7 +219,7 @@ impl event::EventHandler for Grid {
                     2 => new_grid.cells[row][col].alive = self.cells[row][col].alive,
                     3 => new_grid.cells[row][col].alive = true,
                     4..=8 => new_grid.cells[row][col].alive = false,
-                    _ => println!("FUCK"),
+                    _ => println!("This code should be unreachable. Something has gone wrong."),
                 }
             }
         }

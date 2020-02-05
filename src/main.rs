@@ -15,10 +15,10 @@ fn main() -> GameResult {
 	if argv.len() == 2 {
 		grid = match &argv[1][..] {
 			"exploder" => Grid::exploder().unwrap(),
-			"glider" 	 => Grid::glider().unwrap(),
-			"gun" 		 => Grid::glider_gun().unwrap(),
+			"glider"   => Grid::glider().unwrap(),
+			"gun"      => Grid::glider_gun().unwrap(),
 			"bar"      => Grid::bar().unwrap(),
-			_ 				 => Grid::new().unwrap()
+			_          => Grid::new().unwrap()
 		};
 	} else {
 		grid = Grid::new().unwrap();

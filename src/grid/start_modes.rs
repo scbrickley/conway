@@ -130,6 +130,13 @@ impl Grid {
 			cells.push(row);
 		}
 
+		cells[10][27].alive = true;
+		cells[10][26].alive = true;
+		cells[10][25].alive = true;
+		cells[10][24].alive = true;
+		cells[10][23].alive = true;
+		cells[10][22].alive = true;
+		cells[10][21].alive = true;
 		cells[10][20].alive = true;
 		cells[10][19].alive = true;
 		cells[10][18].alive = true;

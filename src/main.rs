@@ -24,7 +24,9 @@ fn main() -> GameResult {
 		grid = Grid::new().unwrap();
 	}
 
-	let window_setup = WindowSetup::default().title("Conway's Game of Life").vsync(true);
+	let window_setup = WindowSetup::default()
+		.title("Conway's Game of Life")
+		.vsync(true);
 
 	let cb = ggez::ContextBuilder::new("super_simple", "ggez")
 		.window_setup(window_setup);
